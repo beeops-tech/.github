@@ -1,6 +1,6 @@
 # Fonctionnement basique
 
-[Design de l'application](../archi-design.png)
+![Design de l'application](../archi-design.png)
 
 # Repository : 
 - backend-spring (java)
