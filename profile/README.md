@@ -20,7 +20,71 @@ Mix entre une architecture hexagonale et une clean architecture.
 ## Point notable
 Voici les quelques points notables du backend.
 
-### Choix de mongodb et DDD
+### DDD et le choix de Mongodb 
+Nous avons modéliser notre model en utlisant les patterns tactiques du DDD.
+Cette approche permet de faire sortir notre métier de manière organisé.
+
+```mermaid
+%%{ init: { "theme": "default", "flowchart": { "curve": "linear" }}}%%
+flowchart TD
+
+%% Styles
+classDef entity fill:#cce5ff,stroke:#007acc,stroke-width:2px;
+classDef valueObject fill:#d4edda,stroke:#155724,stroke-width:2px;
+classDef aggregate fill:#004085,stroke:#004085,color:#ffffff,stroke-width:2px;
+
+%% Root
+Hive["Hive"]:::aggregate
+
+%% Entities
+Dashboard["Dashboard"]:::entity
+Bee["Bee"]:::entity
+
+%% Value Objects
+HiveId["HiveId"]:::valueObject
+DashboardId["DashboardId"]:::valueObject
+DashboardToken["DashboardToken"]:::valueObject
+Grid["Grid"]:::valueObject
+Widget["Widget"]:::valueObject
+UsedWebComponent["UsedWebComponent"]:::valueObject
+WebComponentTag["WebComponentTag"]:::valueObject
+BeeId["BeeId"]:::valueObject
+BeeScreen["BeeScreen"]:::valueObject
+Origin["Origin"]:::valueObject
+
+%% Relationships
+Hive --> HiveId
+Hive --> DashboardToken
+Hive --> Dashboard
+Hive --> Bee
+
+Dashboard --> DashboardId
+Dashboard --> Grid
+Grid --> Widget
+Grid --> UsedWebComponent
+Widget --> WebComponentTag
+
+Bee --> BeeId
+Bee --> BeeScreen
+Bee --> Origin
+
+%% Légende
+subgraph Légende [ ]
+    direction LR
+    legendEntity["Entity"]:::entity
+    legendValue["Value Object"]:::valueObject
+    legendAgg["Aggregate Root"]:::aggregate
+end
+```
+
+Voici notre graphique pour notre aggregat root.
+Le principe est de pouvoir agir sur les entités & value object de notre aggregat uniquement dans le contexte de l'aggregat. Afin de pouvoir garder une cohérence dans nos données ainsi qu'une facilité dans le développement, car étant donné que notre root agrregat (hive), et le seul point d'entré pour le métier de notre application. (On notera qu'on a uniquement un HiveRepository (domain/port/HiveRepository), afin d'être obliger de passer par une hive pour faire des interactions métiers).
+
+Le choix de mongodb a été fait pour deux raisons : 
+- Facilité dans la phase de développement pour l'ajout et la supression de champ. La base est moins couteuse en temps a maintenir, il n'y a pas de migration de schéma a effectué. Etant dans une phase de développement et d'émergence de notre domaine, notre choix s'est porté sur MongoDb.
+- Représentation de notre aggregat en base. Notre collection va calquer presque parfaitement notre aggregat ce qui nous facilite encore le travail.
+
+A noter que de part notre architecture, le passage, si nécessaire, vers un SGBDR se fera assez rapidement car il n'y aura qu'a changer la couche de persistance ainsi que les adapters.
 
 ### ArchUnit pour les tests d'achitectures
 Ce test utilise ArchUnit pour vérifier le respect des règles de l'archi hexagonale dans le projet. Il définit trois couches :
