@@ -22,6 +22,8 @@ Voici les quelques points notables du backend.
 
 ### Choix de mongodb et DDD
 
+### ArchUnit pour les tests d'achitectures
+
 ### Implémentation de server sent event comme vecteur principal de communication backend -> front.
 Voir justification front
 
@@ -52,6 +54,76 @@ La raison de ça c'est de pouvoir générer 2 specs open api spécifiques a chaq
 Elles sont disponibles sur ce lien ([LienOpen Api en local sur le back](http://localhost:8080/api/v1/api-docs/ui)).
 La séparation se fait dans la classe application/http/OpenApiConfig en fonction des routes.
 
+# Frond-end
+
+## Fonctionnalités
+
+- Page de connexion à une hive
+- Page de monitoring
+  - Liste des bees de la hive
+    - Statut de la bee (Hors/En ligne)
+    - IP de la bee
+    - URL actuelle
+    - Pousser un dashboard
+    - Pousser une URL
+    - Pousser la page d'accueil
+- Page des dashboard
+
+  - Création d'un dashboard
+    - Renommage d'un dashboard
+    - Téléchargement / insertion de widgets
+    - Modification du layout
+    - 📌 TODO Préviusalisation du dashboard
+
+- Déconnexion de la hive
+- Afficher son identifiant technique (ID de la Hive)
+
+## Technos
+
+Stack front :
+
+- Vite
+- Vue.js
+- Tailwind CSS
+- Gridstack
+
+Widgets :
+
+- Webcomposants lit bundlés en un fichier Javascript unique avec Vite
+
+## Les widgets
+
+Les webcomposants une fois bundlés sont mis dans un dossier du projet front et référencés dans un fichier JSON. L'objectif plus tard sera d'avoir un registre dans le cloud pour ces composants.
+
+Pour utiliser un webcomposant le principe est simple :
+
+1. Récupérer le script correspondant
+2. Insérer ce script dans le DOM
+3. Utiliser la balise créée dans ce script ex: `<mon-composant></mon-composant>`
+
+## Les dashboards
+
+Fonctionnelement un dashboard est une liste de widgets (un widget est l'association d'un webcomposant et de ses données de taille et de positionnement dans une grille), on représente ces widgets dans une grille Gridstack nous permettant de les modeler à notre guise : position, taille. A chaque fois qu'un dashboard est mis à jour (ex: un widget est déplacé), celui-ci est persisté côté back afin d'avoir un résultat quasi instantané.
+
+## La page monitoring
+
+La page de monitoring (page où sont affichées toutes les bees d'une hive), de part sa criticité et de son besoin de réactivité est connectée en mode Server-Sent-Event, c'est à dire que son contenu est réactualisé sans la moindre action utilisateur dès que le back nous signale des modifications : ex connection d'une nouvelle bee, passage Hors/En-ligne d'une bee, ... Le tout en évitant un système de polling qui pourrait poser des problèmes de performances côté front ou back.
+
+# Bee
+
+La bee est un composant majeur du système BeeOps: il s'agit de l'agent qui va recevoir les instructions d'affichage des utilisateurs.
+
+Ce composant est destiné à être léger, performant et indépendant de tel ou tel système d'exploitation, Go s'est donc désigné comme notre techno de choix pour sa réalisation.
+
+Au démarrage d'une bee celle-ci va lancer une instance Chromium avec l'aide du moteur de test Playwright. Il s'agit d'une solution de facilité qui sera destiné à être changée car cela alourdit ce système destiné à être léger
+
+Elle expose les endpoints suivants, permettant de la controller :
+
+- `/health` : Permet de vérifier l'état de connexion d'une bee
+- `/push-url/wait-screen` : Permet de pousser l'écran d'attente
+- `/push-url` : Permet de pousser une URL de choix
+
+La bee est également capable en cas d'erreur de son côté, de le signaler au back, qui lui même grace au SSE, va en avertir l'utilisateur
 
 # Ouverture sur l'architecture
 ## Problématique
