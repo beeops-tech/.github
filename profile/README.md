@@ -20,14 +20,28 @@ Mix entre une architecture hexagonale et une clean architecture.
 ## Point notable
 Voici les quelques points notables du backend.
 
-### Choix de mongodb
+### Choix de mongodb et DDD
 
 ### Implémentation de server sent event comme vecteur principal de communication backend -> front.
 Voir justification front
 
 ### Utilisation de l'Aspect Oriented Programming pour le HiveAccessControl
+Lors de la connection, on renvoi a l'utilisateur un JWT avec dedans sa HiveId.
+Afin de faire en sorte qu'un utilisateur avec un JWT valide ne puisse pas accéder a une autre hive. On a mis en place l'annotation @HiveAccessControl sur les méthodes des controllers concerné.
+Sur ces méthodes, grâce a l'[AOP](https://fr.wikipedia.org/wiki/Programmation_orient%C3%A9e_aspect), on va appliquer en ammont de chaque appel de la méthode, le traitement suivant : 
+
+- Récupération du JWT
+- Récupération de la HiveId dans le JWT
+- Récupération du HiveId de la requête
+- Comparaison de ces deux champs.
+
+Cela nous permet d'appliquer ce comportement uniquement en apposant une annotation sur notre endpoint
+
 
 ### GlobalExceptionHandler et ProblemDetail
+On a centraliser la gestion des exception dans le fichier application/http/GlobalExceptionHandler.
+L'idée est de catcher l'exception noté par @ExceptionHandler, et de renvoyer un message d'erreur.
+On fait le choix de renvoyer un ProblemDetail ([RFC 7807](https://datatracker.ietf.org/doc/html/rfc7807)), qui s'annonce comme être un futur standard des messages d'erreurs d'api.
 
 ### Génération des deux specs open api.
 En tant que backend, on a deux type d'acteurs qui peuvent nous contacter. Les bees, et les clients fronts.
