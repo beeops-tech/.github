@@ -15,6 +15,11 @@
 
 ## Architecture logicielle
 Mix entre une architecture hexagonale et une clean architecture.
+![Workflow basique de l'architecture back](../workflow_back.png)
+
+## Point notable
+Voici les quelques points notables du backend.
+
 
 
 # Ouverture sur l'achitecture
