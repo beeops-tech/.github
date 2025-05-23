@@ -23,6 +23,19 @@ Voici les quelques points notables du backend.
 ### Choix de mongodb et DDD
 
 ### ArchUnit pour les tests d'achitectures
+Ce test utilise ArchUnit pour vérifier le respect des règles de l'archi hexagonale dans le projet. Il définit trois couches :
+
+- domain : `..domain..`
+- application : `..application..`
+- infrastructure : `..infrastructure..`
+
+Règles de dépendance entre couches :
+
+- infrastructure ➡️ peut uniquement accéder à domain
+- application ➡️ peut accéder à domain et infrastructure
+- domain ❌ ne peut accéder à aucune autre couche
+
+L’objectif est de garantir une séparation claire des responsabilités et de prévenir les dépendances circulaires.
 
 ### Implémentation de server sent event comme vecteur principal de communication backend -> front.
 Voir justification front
