@@ -20,6 +20,23 @@ Mix entre une architecture hexagonale et une clean architecture.
 ## Point notable
 Voici les quelques points notables du backend.
 
+### Choix de mongodb
+
+### Implémentation de server sent event comme vecteur principal de communication backend -> front.
+Voir justification front
+
+### Utilisation de l'Aspect Oriented Programming pour le HiveAccessControl
+
+### GlobalExceptionHandler et ProblemDetail
+
+### Génération des deux specs open api.
+En tant que backend, on a deux type d'acteurs qui peuvent nous contacter. Les bees, et les clients fronts.
+
+Nous avons fais le choix de séparer nos controllers en deux (application/http/bee & application/http/client pour le front).
+La raison de ça c'est de pouvoir générer 2 specs open api spécifiques a chaque acteurs.
+
+Elles sont disponibles sur ce lien ([LienOpen Api en local sur le back](http://localhost:8080/api/v1/api-docs/ui)).
+La séparation se fait dans la classe application/http/OpenApiConfig en fonction des routes.
 
 
 # Ouverture sur l'architecture
