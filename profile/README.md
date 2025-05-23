@@ -22,9 +22,10 @@ Voici les quelques points notables du backend.
 
 
 
-# Ouverture sur l'achitecture
+# Ouverture sur l'architecture
 ## Problématique
-A cause des sessions http de server sent event, notre backend devient staftefull
+A cause des sessions http de server sent event, notre backend devient statefull.
+- Impossible donc de scaler des réplicas.
 
 ## Solution
 ![Solution eda](../stateless.png)
